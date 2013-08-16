@@ -16,7 +16,7 @@ documents = [DIV_COMM, MAG_CART]
 # argument to re.compile. We're doing this because it's human beings who create
 # the metadata headers at the top of Project gutenberg docs, and we want to account 
 # for possibility of "title: Some Title", "Title: Some Title", and "TITLE: Some Title").
-title_search = re.compile(r'(title:\s*)(?P<title>.*)', re.IGNORECASE)
+title_search = re.compile(r'(title:\s*)(?P<title>([\s\S](?!\n.+:))*)', re.IGNORECASE)
 author_search = re.compile(r'(author:)(?P<author>.*)', re.IGNORECASE)
 translator_search = re.compile(r'(translator:)(?P<translator>.*)', re.IGNORECASE)
 illustrator_search = re.compile(r'(illustrator:)(?P<illustrator>.*)', re.IGNORECASE)
@@ -27,7 +27,7 @@ illustrator_search = re.compile(r'(illustrator:)(?P<illustrator>.*)', re.IGNOREC
 # your currently on in your loop. You should memorize how enumerate works, and google it
 # if you need more explanation. It's a highly productive built in function, and there are
 # common problems that you'll encounter as a programmer that enumerate is great for.
-for i, doc in enumerate(documents):
+for i, doc in enumerate(documents): #the counter variable i -  how does it incrememnt and stop
   title = re.search(title_search, doc).group('title')
   author = re.search(author_search, doc)
   translator = re.search(translator_search, doc)
