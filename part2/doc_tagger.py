@@ -41,3 +41,10 @@ for book in (os.listdir(directory)):
 	print "***" * 25
 	for kw in keywords:
 		print "Here's the keyword info for doc {}:".format(i)
+
+		def make_path(directory, fl):
+    return os.path.join(directory, fl) 
+
+def path_open(make_path_val):
+with open(make_path_val, 'r') as f: 
+    full_text = f.read()

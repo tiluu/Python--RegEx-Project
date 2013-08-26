@@ -16,7 +16,8 @@ directory = sys.argv[1]
 # Source: http://stackoverflow.com/a/1747827/1264950
 #
 keywords =  {kw: re.compile(r'\b' + kw + r'\b') for kw in sys.argv[2:]}
- 
+
+
 title_search = re.compile(r'(?:title:\s*)(?P<title>((\S*( )?)+)' + 
                           r'((\n(\ )+)(\S*(\ )?)*)*)', 
                           re.IGNORECASE)
@@ -24,12 +25,24 @@ author_search = re.compile(r'(author:)(?P<author>.*)', re.IGNORECASE)
 translator_search = re.compile(r'(translator:)(?P<translator>.*)', re.IGNORECASE)
 illustrator_search = re.compile(r'(illustrator:)(?P<illustrator>.*)', re.IGNORECASE)
 
+key_dicts = {'title':title_search, 'author': author_search, 'translator':translator_search, 'illustrator':illustrator_search}
 def make_path(directory, fl):
     return os.path.join(directory, fl) 
 
 def path_open(book_path):
     with open(book_path, 'r') as f: 
-        return f.read()
+        return f.read() 
+
+
+def find_key(key_dicts, text_full):
+    results = {}
+    for key in key_dicts:
+        result = re.search(key_dicts[key], text_full)
+        if result:
+            results[key] = result.group(key)
+        else:
+            results[key] = None
+    return results
 
 for book in (os.listdir(directory)):
     if os.path.splitext(book)[-1] != ".txt": 
@@ -37,24 +50,14 @@ for book in (os.listdir(directory)):
     book_path = make_path(directory, book)
     text_full = path_open(book_path)
 
-    print book_path
-    title = re.search(title_search, text_full).group('title')
-    author = re.search(author_search, text_full)
-    translator = re.search(translator_search, text_full)
-    illustrator = re.search(illustrator_search, text_full)
-    
-    if author: 
-        author = author.group('author')
-    if translator:
-        translator = translator.group('translator')
-    if illustrator:
-        illustrator = illustrator.group('illustrator')
+    searches = find_key(key_dicts, text_full)
+
     print "***" * 25
+
     print "Here's the info for doc {}:".format(book)
-    print "Title:  {}".format(title)
-    print "Author(s): {}".format(author)
-    print "Translator(s): {}".format(translator)
-    print "Illustrator(s): {}".format(illustrator)
+    for k in searches:
+        print '{0}:{1}'.format(k, searches[k]) 
+    
     print "\n"
     
     print "***" * 25
